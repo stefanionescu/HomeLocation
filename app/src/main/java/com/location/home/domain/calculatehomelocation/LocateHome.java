@@ -1,16 +1,53 @@
 package com.location.home.domain.calculatehomelocation;
 
+import com.location.home.domain.calculatehomelocation.utils.GetHomeLocation;
+import com.location.home.domain.calculatehomelocation.utils.ProbableLocation;
 import com.location.home.domain.model.Approximation;
+import com.location.home.executor.PostExecutionThread;
+import com.location.home.executor.ThreadExecutor;
+import com.location.home.executor.UseCase;
 
-public interface LocateHome {
+import javax.inject.Inject;
 
-    void execute(final LocateHome.Callback callback, String newLocation);
+import io.reactivex.Observable;
 
-    interface Callback {
+public class LocateHome extends UseCase<Approximation, LocateHome.Params> {
 
-        void onHomeLocation(Approximation location);
+    @Inject
+    public LocateHome(ThreadExecutor threadExecutor,
+                      PostExecutionThread postExecutionThread) {
 
-        void onError();
+        super(threadExecutor, postExecutionThread);
+
     }
+
+    @Override
+    public Observable<Approximation> buildUseCaseObservable(Params params) {
+
+        final Approximation approximation =
+                new ProbableLocation()
+                        .checkIfDominantExists(new GetHomeLocation().getLocationsList(params.newLocation));
+
+        if (approximation != null)
+
+            return Observable.just(approximation);
+
+        return Observable.just(new Approximation(Math.PI, Math.PI));
+
+    }
+
+    public static final class Params {
+
+        private String newLocation = "";
+
+        private Params(String newLocation) {
+            this.newLocation = newLocation;
+        }
+
+        public static Params forUser(String newLocation) {
+            return new Params(newLocation);
+        }
+    }
+
 
 }

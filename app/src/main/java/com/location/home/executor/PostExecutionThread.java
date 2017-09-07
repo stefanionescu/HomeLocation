@@ -1,4 +1,4 @@
-package com.location.home.executor.reactive;
+package com.location.home.executor;
 
 import io.reactivex.Scheduler;
 

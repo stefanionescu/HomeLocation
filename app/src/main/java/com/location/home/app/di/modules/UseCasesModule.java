@@ -2,9 +2,8 @@ package com.location.home.app.di.modules;
 
 import com.location.home.app.di.scopes.MainScope;
 import com.location.home.domain.calculatehomelocation.LocateHome;
-import com.location.home.domain.calculatehomelocation.LocateHomeImpl;
-import com.location.home.executor.InteractorExecutor;
-import com.location.home.executor.MainThreadExecutor;
+import com.location.home.executor.PostExecutionThread;
+import com.location.home.executor.ThreadExecutor;
 
 import javax.inject.Named;
 
@@ -16,10 +15,10 @@ public class UseCasesModule {
 
     @Provides
     @MainScope
-    public LocateHome provideLocateHome(@Named("interactor_exec") InteractorExecutor interactorExecutor,
-                                        @Named("main_exec") MainThreadExecutor mainThreadExecutor){
+    public LocateHome provideLocateHome(@Named("interactor_exec") ThreadExecutor threadExecutor,
+                                        @Named("main_exec") PostExecutionThread postExecutionThread) {
 
-        return new LocateHomeImpl(interactorExecutor, mainThreadExecutor);
+        return new LocateHome(threadExecutor, postExecutionThread);
 
     }
 

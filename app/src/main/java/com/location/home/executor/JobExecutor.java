@@ -1,4 +1,4 @@
-package com.location.home.executor.reactive;
+package com.location.home.executor;
 
 import android.support.annotation.NonNull;
 
@@ -8,20 +8,19 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Decorated {@link ThreadPoolExecutor}
  */
-@Singleton
+
 public class JobExecutor implements ThreadExecutor {
   private final ThreadPoolExecutor threadPoolExecutor;
 
     private static final BlockingQueue<Runnable> WORK_QUEUE = new LinkedBlockingQueue<Runnable>();
 
   @Inject
-  JobExecutor() {
-    this.threadPoolExecutor = new ThreadPoolExecutor(3, 5, 10, TimeUnit.SECONDS,
+  public JobExecutor() {
+    this.threadPoolExecutor = new ThreadPoolExecutor(3, 5, 30, TimeUnit.SECONDS,
         WORK_QUEUE, new JobThreadFactory());
   }
 

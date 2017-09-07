@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.location.home.domain.calculatehomelocation.LocateHome;
 import com.location.home.domain.model.Approximation;
+import com.location.home.executor.reactive.DefaultObserver;
 import com.location.home.ui.views.MainView;
 
 import javax.inject.Inject;
@@ -74,23 +74,14 @@ public class MainPresenterImp implements MainPresenter {
 
     private void calculateHouseLocation(String s) {
 
-        locateHome.execute(new LocateHome.Callback() {
-            @Override
-            public void onHomeLocation(Approximation location) {
+        locateHome.execute(new UserListObserver(), LocateHome.Params.forUser(s));
 
-                try{
+    }
 
-                    view.updateHomeLocation(String.valueOf(location.getLat()),
-                                            String.valueOf(location.getLon()));
+    @Override
+    public void onResumeView() {
 
-                } catch (Exception e){}
-
-            }
-
-            @Override
-            public void onError() {}
-
-        }, s);
+        calculateHouseLocation(" ");
 
     }
 
@@ -114,10 +105,26 @@ public class MainPresenterImp implements MainPresenter {
 
     }
 
-    @Override
-    public void onResumeView() {
+    private final class UserListObserver extends DefaultObserver<Approximation> {
 
-        calculateHouseLocation(" ");
+        @Override public void onComplete() {}
 
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Approximation homeLocation) {
+
+            if(homeLocation.getLat() != Math.PI){
+
+                try{
+
+                    view.updateHomeLocation(String.valueOf(homeLocation.getLat()),
+                            String.valueOf(homeLocation.getLon()));
+
+                } catch (Exception e){}
+
+            }
+
+        }
     }
+
 }
