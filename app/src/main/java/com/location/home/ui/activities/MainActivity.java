@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Inject
     MainPresenter presenter;
 
-    AskForPermission askPermission;
+    private AskForPermission askPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

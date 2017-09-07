@@ -6,7 +6,7 @@ import android.content.Context;
 
 public class CheckServiceRunning {
 
-    Context context;
+    private Context context;
 
     public CheckServiceRunning(Context context){
 

@@ -2,7 +2,7 @@ package com.location.home.domain.model;
 
 public class Approximation {
 
-    double lat, lon;
+    private double lat, lon;
 
     public Approximation(double lat, double lon){
 

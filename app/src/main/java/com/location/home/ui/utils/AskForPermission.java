@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 
 public class AskForPermission {
 
-    Context context;
+    private Context context;
 
     public AskForPermission(Context context){
 

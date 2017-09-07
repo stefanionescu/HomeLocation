@@ -13,11 +13,11 @@ import java.io.OutputStreamWriter;
 
 public class FileManager {
 
-    final File path =
+    final private File path =
             Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DCIM + "/HomeLocation/");
 
-    final File file = new File(path, "home.txt");
+    final private File file = new File(path, "home.txt");
 
     public void write(String fileContents) {
 

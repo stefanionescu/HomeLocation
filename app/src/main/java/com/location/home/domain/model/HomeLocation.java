@@ -2,9 +2,9 @@ package com.location.home.domain.model;
 
 public class HomeLocation {
 
-    double lat, lon;
+    private double lat, lon;
 
-    int points;
+    private int points;
 
     public HomeLocation(double lat, double lon, int points){
 
