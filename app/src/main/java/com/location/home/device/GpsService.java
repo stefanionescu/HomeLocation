@@ -16,7 +16,7 @@ public class GpsService extends Service {
     @Inject
     Context context;
 
-    LocationListener[] mLocationListeners;
+    private LocationListener[] mLocationListeners;
 
     private LocationManager mLocationManager = null;
 
@@ -58,6 +58,7 @@ public class GpsService extends Service {
     public void onDestroy() {
 
         super.onDestroy();
+
         if (mLocationManager != null) {
 
             for (int i = 0; i < mLocationListeners.length; i++) {

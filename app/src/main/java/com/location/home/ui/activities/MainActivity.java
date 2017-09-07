@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         if (serviceRunning) changeButtonToStop();
 
+        else changeButtonToStart();
+
         presenter.onResumeView();
 
         presenter.startFetchingData();
@@ -170,40 +172,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     }
 
-    private void changeButtonState() {
+    @Override
+    public void changeButtonToStop() {
 
-        Drawable drawable = getCoordinates.getDrawable();
-
-        try {
-
-            if (drawable.getConstantState().
-                    equals(getResources().getDrawable(R.drawable.ic_action_play)
-                            .getConstantState())) {
-
-                getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_stop));
-
-                startService(new Intent(this, GpsService.class));
-
-
-            } else {
-
-                getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-
-                stopService(new Intent(this, GpsService.class));
-
-            }
-
-        } catch (NullPointerException e) {
-
-            Log.e("drawable", e.getMessage());
-
-        }
+        getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_stop));
 
     }
 
-    private void changeButtonToStop() {
+    @Override
+    public void changeButtonToStart(){
 
-        getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_stop));
+        getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
 
     }
 
@@ -233,6 +212,37 @@ public class MainActivity extends AppCompatActivity implements MainView {
             }
 
         }
+    }
+
+    private void changeButtonState() {
+
+        Drawable drawable = getCoordinates.getDrawable();
+
+        try {
+
+            if (drawable.getConstantState().
+                    equals(getResources().getDrawable(R.drawable.ic_action_play)
+                            .getConstantState())) {
+
+                getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_stop));
+
+                startService(new Intent(this, GpsService.class));
+
+
+            } else {
+
+                getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
+
+                stopService(new Intent(this, GpsService.class));
+
+            }
+
+        } catch (NullPointerException e) {
+
+            Log.e("drawable", e.getMessage());
+
+        }
+
     }
 
     private void exitWithoutPermissions() {

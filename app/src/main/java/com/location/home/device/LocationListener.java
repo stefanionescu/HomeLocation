@@ -7,9 +7,9 @@ import android.os.Bundle;
 
 public class LocationListener implements android.location.LocationListener {
 
-    Location mLastLocation;
-    FileManager manager;
-    Context context;
+    private Location mLastLocation;
+    private FileManager manager;
+    private Context context;
 
     public LocationListener(String provider, Context context) {
 
@@ -37,6 +37,13 @@ public class LocationListener implements android.location.LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction("com.location.home.device.STOPPED_GETTING_LOCATION");
+
+        context.sendBroadcast(sendIntent);
+
+        context.stopService(new Intent(context, GpsService.class));
 
     }
 

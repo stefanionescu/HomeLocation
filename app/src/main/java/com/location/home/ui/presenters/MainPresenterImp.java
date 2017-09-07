@@ -62,8 +62,7 @@ public class MainPresenterImp implements MainPresenter {
 
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ex) {}
 
         if (!gps_enabled)
             return false;
@@ -97,6 +96,14 @@ public class MainPresenterImp implements MainPresenter {
                     double longitude = intent.getDoubleExtra("longitude", 0);
 
                     calculateHouseLocation(String.valueOf(latitude) + " " + String.valueOf(longitude));
+
+                } else if (intent.getAction() == "com.location.home.device.STOPPED_GETTING_LOCATION") {
+
+                    try{
+
+                        view.changeButtonToStart();
+
+                    } catch(Exception e){}
 
                 }
 

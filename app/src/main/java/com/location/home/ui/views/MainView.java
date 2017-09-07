@@ -8,4 +8,8 @@ public interface MainView extends View{
 
     void showToast(String s);
 
+    void changeButtonToStart();
+
+    void changeButtonToStop();
+
 }
