@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">HomeLocation</string>
+
+    <string name="accuracy">Accuracy: </string>
+
+    <string name="satellite">Satellites: </string>
+
+    <string name="fetching_data">Fetching data...</string>
+
+    <string name="possible_address">Possible home address:</string>
+
+    <string name="not_enough_data">N/A</string>
+
+    <string name="noti_id" translatable="false">speedMeterServiceId</string>
+
+    <string name="gps_disabled">GPS is disabled</string>
+
+    <string name="please_enable_gps">Kindly enable your GPS</string>
+
+    <string name="done">Done!</string>
+
+    <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
+
+</resources>
