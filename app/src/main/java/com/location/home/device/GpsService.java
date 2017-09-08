@@ -19,22 +19,17 @@ import javax.inject.Inject;
 
 public class GpsService extends Service {
 
-    private LocationListener[] locationListeners;
-
-    private Context context;
-
     @Inject
     LocateHome locateHome;
-
     @Inject
     Notification.Builder builder;
-
     @Inject
     android.app.NotificationManager manageNotifications;
-
+    private LocationListener[] locationListeners;
+    private Context context;
     private com.location.home.device.NotificationManager notificationManager;
 
-    private LocationManager mLocationManager = null;
+    private LocationManager locationManager = null;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -75,33 +70,21 @@ public class GpsService extends Service {
 
         super.onDestroy();
 
-        if (mLocationManager != null) {
-
-            for (int i = 0; i < locationListeners.length; i++) {
-
-                try {
-
-                    removeListenerUpdates(i);
-
-                } catch (Exception ex) {
-
-                }
-
-            }
-        }
+        removeAllListeners();
 
         notificationManager.stopNotification();
 
     }
 
-    private void removeListenerUpdates(int i){
+    public void removeListenerUpdates(int i) {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            mLocationManager.removeUpdates(locationListeners[i]);
+            if (locationManager.getAllProviders().size() >= i)
+                locationManager.removeUpdates(locationListeners[i]);
 
         }
 
@@ -109,8 +92,8 @@ public class GpsService extends Service {
 
     private void initializeLocationManager() {
 
-        if (mLocationManager == null) {
-            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null) {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
 
     }
@@ -119,12 +102,28 @@ public class GpsService extends Service {
 
         try {
 
-            mLocationManager.requestLocationUpdates(
+            locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, 60 * 1000, 15,
                     locationListeners[0]);
 
-        } catch (java.lang.SecurityException ex) {}
-          catch (IllegalArgumentException ex) {}
+        } catch (java.lang.SecurityException ex) {
+        } catch (IllegalArgumentException ex) {
+        }
+
+    }
+
+    public void getLocationFromNetwork() {
+
+        try {
+
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 60 * 1000, 15,
+                    locationListeners[1]);
+
+        } catch (java.lang.SecurityException ex) {
+        } catch (IllegalArgumentException ex) {
+        }
+
 
     }
 
@@ -140,14 +139,41 @@ public class GpsService extends Service {
 
     }
 
-    private void setupListeners(){
+    private void setupListeners() {
 
         locationListeners = new LocationListener[]{
                 new LocationListener(LocationManager.GPS_PROVIDER,
                         context,
+                        this,
+                        locateHome,
+                        builder,
+                        manageNotifications),
+
+                new LocationListener(LocationManager.NETWORK_PROVIDER,
+                        context,
+                        this,
                         locateHome,
                         builder,
                         manageNotifications)};
+
+    }
+
+    private void removeAllListeners() {
+
+        if (locationManager != null) {
+
+            for (int i = 0; i < locationListeners.length; i++) {
+
+                try {
+
+                    removeListenerUpdates(i);
+
+                } catch (Exception ex) {
+
+                }
+
+            }
+        }
 
     }
 

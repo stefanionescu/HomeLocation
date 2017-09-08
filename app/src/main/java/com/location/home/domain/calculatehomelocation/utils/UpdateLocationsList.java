@@ -12,7 +12,7 @@ public class UpdateLocationsList {
 
     private final int EARTH_RADIUS = 6371000; // < -- meters
     private double minimumDistance = 6401000.00;
-    private final int samePointAllowance = 30;
+    private final int samePointAllowance = 35;
 
     private ArrayList<HomeLocation> locations;
     private double newLat, newLong;

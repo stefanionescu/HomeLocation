@@ -13,7 +13,7 @@
 
     <string name="done">Done!</string>
 
-    <string name="notification_text">Last known location: </string>
+    <string name="notification_text">Live: </string>
 
     <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
 
