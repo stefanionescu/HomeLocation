@@ -19,7 +19,7 @@ public class JobExecutor implements ThreadExecutor {
     private static final BlockingQueue<Runnable> WORK_QUEUE = new LinkedBlockingQueue<Runnable>();
 
   @Inject
-  public JobExecutor() {
+  JobExecutor() {
     this.threadPoolExecutor = new ThreadPoolExecutor(3, 5, 30, TimeUnit.SECONDS,
         WORK_QUEUE, new JobThreadFactory());
   }

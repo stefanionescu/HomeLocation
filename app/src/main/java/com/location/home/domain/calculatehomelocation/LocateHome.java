@@ -22,7 +22,7 @@ public class LocateHome extends UseCase<Approximation, LocateHome.Params> {
     }
 
     @Override
-    public Observable<Approximation> buildUseCaseObservable(Params params) {
+    public Observable<Approximation> buildUseCaseObservable(LocateHome.Params params) {
 
         final Approximation approximation =
                 new ProbableLocation()

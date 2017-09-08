@@ -19,7 +19,7 @@ public class FileManager {
 
     final private File file = new File(path, "home.txt");
 
-    public void write(String fileContents) {
+    public synchronized void write(String fileContents) {
 
         initializeFile();
 
@@ -62,7 +62,7 @@ public class FileManager {
 
     }
 
-    public String read() {
+    public synchronized String read() {
 
         initializeFile();
 
@@ -90,7 +90,7 @@ public class FileManager {
         return aBuffer;
     }
 
-    private void initializeFile() {
+    private synchronized void initializeFile() {
 
         if (!path.exists()) {
 
@@ -111,7 +111,7 @@ public class FileManager {
 
     }
 
-    public void deleteFile(){
+    public synchronized void deleteFile(){
 
         file.delete();
 

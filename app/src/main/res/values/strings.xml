@@ -19,6 +19,8 @@
 
     <string name="done">Done!</string>
 
+    <string name="notification_text">Your service is running</string>
+
     <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
 
 </resources>
