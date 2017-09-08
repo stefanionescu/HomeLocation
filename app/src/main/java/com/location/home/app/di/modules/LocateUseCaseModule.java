@@ -14,7 +14,7 @@ import dagger.Provides;
 @Module(includes = ExecutorModule.class)
 public class LocateUseCaseModule {
 
-    Context context;
+    private Context context;
 
     public LocateUseCaseModule(Context context){
 

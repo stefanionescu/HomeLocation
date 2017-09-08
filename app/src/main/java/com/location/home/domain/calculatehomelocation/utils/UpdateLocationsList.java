@@ -54,7 +54,7 @@ public class UpdateLocationsList {
                     newLat,
                     newLong);
 
-            if (currentDistance < minimumDistance && currentDistance <= 61) {
+            if (currentDistance < minimumDistance && currentDistance <= 40) {
 
                 minimumDistance = currentDistance;
 

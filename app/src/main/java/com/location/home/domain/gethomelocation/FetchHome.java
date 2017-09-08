@@ -19,9 +19,19 @@ public class FetchHome extends UseCaseObservable<Approximation, Void> {
     @Override
     public Observable<Approximation> buildUseCaseObservable(Void aVoid) {
 
-        return Observable.just(new ProbableLocation()
+        Approximation approximation = new ProbableLocation()
                 .checkIfDominantExists(new GetHomeLocation()
-                        .getLocationsList(" ")));
+                        .getLocationsList(" "));
+
+        if (approximation != null){
+
+            return Observable.just(new ProbableLocation()
+                    .checkIfDominantExists(new GetHomeLocation()
+                            .getLocationsList(" ")));
+
+        }
+
+        return Observable.just(new Approximation(Math.PI, Math.PI));
 
     }
 

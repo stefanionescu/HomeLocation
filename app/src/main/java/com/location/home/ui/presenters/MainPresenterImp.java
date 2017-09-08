@@ -35,7 +35,7 @@ public class MainPresenterImp implements MainPresenter {
 
         setupBroadcast();
 
-        context.registerReceiver(locationBroadcast, new IntentFilter("com.location.home.device.GET_LOCATION"));
+        context.registerReceiver(locationBroadcast, prepareFilter());
 
         registered = 1;
 
@@ -91,11 +91,11 @@ public class MainPresenterImp implements MainPresenter {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction() == "com.location.home.device.GET_LOCATION") {
+                if (intent.getAction().equals("com.location.home.device.GET_LOCATION")) {
 
                     calculateHouseLocation();
 
-                } else if (intent.getAction() == "com.location.home.device.STOPPED_GETTING_LOCATION") {
+                } else if (intent.getAction().equals("com.location.home.device.STOPPED_GETTING_LOCATION")) {
 
                     try {
 
@@ -137,6 +137,16 @@ public class MainPresenterImp implements MainPresenter {
             }
 
         }
+    }
+
+    private IntentFilter prepareFilter(){
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.location.home.device.GET_LOCATION");
+        filter.addAction("com.location.home.device.STOPPED_GETTING_LOCATION");
+
+        return filter;
+
     }
 
 }

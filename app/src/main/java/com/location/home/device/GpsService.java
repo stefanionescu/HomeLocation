@@ -53,8 +53,6 @@ public class GpsService extends Service {
 
         getLocationFromGPS();
 
-        getLocationFromNetwork();
-
     }
 
     @Override
@@ -91,21 +89,7 @@ public class GpsService extends Service {
         try {
 
             mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 60 * 1000, 30,
-                    locationListeners[0]);
-
-        } catch (java.lang.SecurityException ex) {
-        } catch (IllegalArgumentException ex) {
-        }
-
-    }
-
-    private void getLocationFromNetwork() {
-
-        try {
-
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 60 * 1000, 30,
+                    LocationManager.GPS_PROVIDER, 60 * 1000, 25,
                     locationListeners[0]);
 
         } catch (java.lang.SecurityException ex) {
@@ -128,8 +112,7 @@ public class GpsService extends Service {
     private void setupListeners(){
 
         locationListeners = new LocationListener[]{
-                new LocationListener(LocationManager.GPS_PROVIDER, context, locateHome),
-                new LocationListener(LocationManager.NETWORK_PROVIDER, context, locateHome)};
+                new LocationListener(LocationManager.GPS_PROVIDER, context, locateHome)};
 
     }
 

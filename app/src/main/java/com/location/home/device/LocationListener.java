@@ -9,7 +9,7 @@ import com.location.home.domain.calculatehomelocation.LocateHome;
 
 public class LocationListener implements android.location.LocationListener {
 
-    LocateHome locateHome;
+    private LocateHome locateHome;
     private Location mLastLocation;
     private Context context;
 
