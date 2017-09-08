@@ -224,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                     equals(getResources().getDrawable(R.drawable.ic_action_play)
                             .getConstantState())) {
 
+
                 getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_stop));
 
                 startService(new Intent(this, GpsService.class));

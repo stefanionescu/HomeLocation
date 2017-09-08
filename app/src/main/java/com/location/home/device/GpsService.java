@@ -1,27 +1,27 @@
 package com.location.home.device;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.IBinder;
 
-import com.location.home.R;
-import com.location.home.app.HomeLocationApplication;
 import com.location.home.app.di.components.DaggerServiceComponent;
-import com.location.home.ui.activities.MainActivity;
+import com.location.home.app.di.modules.LocateUseCaseModule;
+import com.location.home.domain.calculatehomelocation.LocateHome;
 
 import javax.inject.Inject;
 
 public class GpsService extends Service {
 
+    LocationListener[] locationListeners;
+
     @Inject
+    LocateHome locateHome;
+
     Context context;
 
-    private LocationListener[] mLocationListeners;
+    private com.location.home.device.NotificationManager notificationManager;
 
     private LocationManager mLocationManager = null;
 
@@ -41,16 +41,13 @@ public class GpsService extends Service {
     @Override
     public void onCreate() {
 
-        DaggerServiceComponent.builder()
-                .applicationComponent(((HomeLocationApplication) getApplication()).getApplicationComponent())
-                .build()
-                .inject(this);
+        prepareVariables();
 
-        startNotification(createNotificationBuilder(getPendingIntent()));
+        setupListeners();
 
-        mLocationListeners = new LocationListener[]{
-                new LocationListener(LocationManager.GPS_PROVIDER, context),
-                new LocationListener(LocationManager.NETWORK_PROVIDER, context)};
+        notificationManager = new com.location.home.device.NotificationManager(context);
+
+        notificationManager.startNotification();
 
         initializeLocationManager();
 
@@ -67,10 +64,10 @@ public class GpsService extends Service {
 
         if (mLocationManager != null) {
 
-            for (int i = 0; i < mLocationListeners.length; i++) {
+            for (int i = 0; i < locationListeners.length; i++) {
                 try {
 
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                    mLocationManager.removeUpdates(locationListeners[i]);
 
                 } catch (Exception ex) {
 
@@ -78,7 +75,7 @@ public class GpsService extends Service {
             }
         }
 
-        stopNotification();
+        notificationManager.stopNotification();
 
     }
 
@@ -89,81 +86,51 @@ public class GpsService extends Service {
         }
     }
 
-    private void getLocationFromGPS(){
-
-        try {
-
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 60 * 1000, 30,
-                    mLocationListeners[1]);
-
-        } catch (java.lang.SecurityException ex) {}
-
-        catch (IllegalArgumentException ex) {}
-
-    }
-
-    private void getLocationFromNetwork(){
+    private void getLocationFromGPS() {
 
         try {
 
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, 60 * 1000, 30,
-                    mLocationListeners[0]);
+                    locationListeners[0]);
 
-        } catch (java.lang.SecurityException ex) {}
-
-        catch (IllegalArgumentException ex) {}
-
-    }
-
-    private void startNotification(Notification notification){
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0, notification);
+        } catch (java.lang.SecurityException ex) {
+        } catch (IllegalArgumentException ex) {
+        }
 
     }
 
-    private PendingIntent getPendingIntent(){
+    private void getLocationFromNetwork() {
 
-        Intent showTaskIntent = new Intent(getApplicationContext(), MainActivity.class);
-        showTaskIntent.setAction(Intent.ACTION_MAIN);
-        showTaskIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        showTaskIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try {
 
-        PendingIntent contentIntent = PendingIntent.getActivity(
-                getApplicationContext(),
-                0,
-                showTaskIntent,
-                0);
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 60 * 1000, 30,
+                    locationListeners[0]);
 
-        return contentIntent;
+        } catch (java.lang.SecurityException ex) {
+        } catch (IllegalArgumentException ex) {
+        }
 
     }
 
-    private Notification createNotificationBuilder(PendingIntent contentIntent){
+    private void prepareVariables() {
 
-        return new Notification.Builder(getApplicationContext())
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.notification_text))
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentIntent(contentIntent)
-                .build();
+        context = this.getApplicationContext();
+
+        DaggerServiceComponent.builder()
+                .locateUseCaseModule(new LocateUseCaseModule(context))
+                .build()
+                .inject(this);
 
     }
 
-    private void stopNotification(){
+    private void setupListeners(){
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        notificationManager.cancel(0);
+        locationListeners = new LocationListener[]{
+                new LocationListener(LocationManager.GPS_PROVIDER, context, locateHome),
+                new LocationListener(LocationManager.NETWORK_PROVIDER, context, locateHome)};
 
     }
-
 
 }

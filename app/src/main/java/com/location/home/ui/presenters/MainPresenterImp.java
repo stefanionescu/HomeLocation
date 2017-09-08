@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
 
-import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.domain.gethomelocation.FetchHome;
 import com.location.home.domain.model.Approximation;
 import com.location.home.executor.reactive.DefaultObserver;
 import com.location.home.ui.views.MainView;
@@ -19,14 +19,14 @@ public class MainPresenterImp implements MainPresenter {
     private MainView view;
     private Context context;
     private int registered = 0;
-    private LocateHome locateHome;
+    private FetchHome fetchHome;
 
     @Inject
-    public MainPresenterImp(MainView view, Context context, LocateHome locateHome) {
+    public MainPresenterImp(MainView view, Context context, FetchHome fetchHome) {
 
         this.view = view;
         this.context = context;
-        this.locateHome = locateHome;
+        this.fetchHome = fetchHome;
 
     }
 
@@ -35,7 +35,7 @@ public class MainPresenterImp implements MainPresenter {
 
         setupBroadcast();
 
-        context.registerReceiver(locationBroadcast, new IntentFilter("com.location.home.device.CALCULATE"));
+        context.registerReceiver(locationBroadcast, new IntentFilter("com.location.home.device.GET_LOCATION"));
 
         registered = 1;
 
@@ -62,7 +62,8 @@ public class MainPresenterImp implements MainPresenter {
 
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         if (!gps_enabled)
             return false;
@@ -71,39 +72,37 @@ public class MainPresenterImp implements MainPresenter {
 
     }
 
-    private void calculateHouseLocation(String s) {
+    private void calculateHouseLocation() {
 
-        locateHome.execute(new UserListObserver(), LocateHome.Params.forUser(s));
+        fetchHome.execute(new UserListObserver(), null);
 
     }
 
     @Override
     public void onResumeView() {
 
-        calculateHouseLocation(" ");
+        calculateHouseLocation();
 
     }
 
-    private void setupBroadcast(){
+    private void setupBroadcast() {
 
         locationBroadcast = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction() == "com.location.home.device.CALCULATE") {
+                if (intent.getAction() == "com.location.home.device.GET_LOCATION") {
 
-                    double latitude = intent.getDoubleExtra("latitude", 0);
-                    double longitude = intent.getDoubleExtra("longitude", 0);
-
-                    calculateHouseLocation(String.valueOf(latitude) + " " + String.valueOf(longitude));
+                    calculateHouseLocation();
 
                 } else if (intent.getAction() == "com.location.home.device.STOPPED_GETTING_LOCATION") {
 
-                    try{
+                    try {
 
                         view.changeButtonToStart();
 
-                    } catch(Exception e){}
+                    } catch (Exception e) {
+                    }
 
                 }
 
@@ -114,20 +113,26 @@ public class MainPresenterImp implements MainPresenter {
 
     private final class UserListObserver extends DefaultObserver<Approximation> {
 
-        @Override public void onComplete() {}
+        @Override
+        public void onComplete() {
+        }
 
-        @Override public void onError(Throwable e) {}
+        @Override
+        public void onError(Throwable e) {
+        }
 
-        @Override public void onNext(Approximation homeLocation) {
+        @Override
+        public void onNext(Approximation homeLocation) {
 
-            if(homeLocation.getLat() != Math.PI){
+            if (homeLocation.getLat() != Math.PI) {
 
-                try{
+                try {
 
                     view.updateHomeLocation(String.valueOf(homeLocation.getLat()),
                             String.valueOf(homeLocation.getLon()));
 
-                } catch (Exception e){}
+                } catch (Exception e) {
+                }
 
             }
 

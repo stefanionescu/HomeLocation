@@ -1,14 +1,13 @@
 package com.location.home.app.di.components;
 
+import com.location.home.app.di.modules.LocateUseCaseModule;
 import com.location.home.app.di.scopes.ServiceScope;
 import com.location.home.device.GpsService;
-
-import javax.inject.Singleton;
 
 import dagger.Component;
 
 @ServiceScope
-@Component(dependencies = ApplicationComponent.class)
+@Component(modules = LocateUseCaseModule.class)
 public interface ServiceComponent {
 
     void inject(GpsService gps);

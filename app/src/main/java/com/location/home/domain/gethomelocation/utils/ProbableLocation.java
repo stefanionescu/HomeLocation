@@ -1,4 +1,4 @@
-package com.location.home.domain.calculatehomelocation.utils;
+package com.location.home.domain.gethomelocation.utils;
 
 import com.location.home.domain.model.Approximation;
 import com.location.home.domain.model.HomeLocation;

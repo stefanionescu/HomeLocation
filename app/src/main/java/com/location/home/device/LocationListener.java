@@ -1,22 +1,23 @@
 package com.location.home.device;
 
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
+import com.location.home.domain.calculatehomelocation.LocateHome;
+
 public class LocationListener implements android.location.LocationListener {
 
+    LocateHome locateHome;
     private Location mLastLocation;
-    private FileManager manager;
     private Context context;
 
-    public LocationListener(String provider, Context context) {
+    public LocationListener(String provider, Context context, LocateHome locateHome) {
 
         mLastLocation = new Location(provider);
 
-        manager = new FileManager();
+        this.locateHome = locateHome;
 
         this.context = context;
 
@@ -25,14 +26,13 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
+        String s = String.valueOf(location.getLatitude())
+                + " "
+                + String.valueOf(location.getLongitude());
+
+        locateHome.execute(LocateHome.Params.forUser(s));
+
         mLastLocation.set(location);
-
-        Intent sendIntent = new Intent();
-        sendIntent.setAction("com.location.home.device.CALCULATE");
-        sendIntent.putExtra("latitude", location.getLatitude());
-        sendIntent.putExtra("longitude", location.getLongitude());
-
-        context.sendBroadcast(sendIntent);
 
     }
 

@@ -20,7 +20,7 @@ public class JobExecutor implements ThreadExecutor {
 
   @Inject
   JobExecutor() {
-    this.threadPoolExecutor = new ThreadPoolExecutor(3, 5, 30, TimeUnit.SECONDS,
+    this.threadPoolExecutor = new ThreadPoolExecutor(3, 5, 60, TimeUnit.SECONDS,
         WORK_QUEUE, new JobThreadFactory());
   }
 

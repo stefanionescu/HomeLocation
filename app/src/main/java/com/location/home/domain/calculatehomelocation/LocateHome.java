@@ -1,38 +1,37 @@
 package com.location.home.domain.calculatehomelocation;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.location.home.domain.calculatehomelocation.utils.GetHomeLocation;
-import com.location.home.domain.calculatehomelocation.utils.ProbableLocation;
-import com.location.home.domain.model.Approximation;
-import com.location.home.executor.PostExecutionThread;
 import com.location.home.executor.ThreadExecutor;
-import com.location.home.executor.UseCase;
+import com.location.home.executor.UseCaseVoid;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
+public class LocateHome extends UseCaseVoid<LocateHome.Params> {
 
-public class LocateHome extends UseCase<Approximation, LocateHome.Params> {
+    Context context;
 
     @Inject
     public LocateHome(ThreadExecutor threadExecutor,
-                      PostExecutionThread postExecutionThread) {
+                      Context context) {
 
-        super(threadExecutor, postExecutionThread);
+        super(threadExecutor);
+
+        this.context = context;
 
     }
 
     @Override
-    public Observable<Approximation> buildUseCaseObservable(LocateHome.Params params) {
+    public void buildUseCase(Params params) {
 
-        final Approximation approximation =
-                new ProbableLocation()
-                        .checkIfDominantExists(new GetHomeLocation().getLocationsList(params.newLocation));
+        new GetHomeLocation().getLocationsList(params.newLocation);
 
-        if (approximation != null)
+        Intent sendIntent = new Intent();
+        sendIntent.setAction("com.location.home.device.GET_LOCATION");
 
-            return Observable.just(approximation);
-
-        return Observable.just(new Approximation(Math.PI, Math.PI));
+        context.sendBroadcast(sendIntent);
 
     }
 

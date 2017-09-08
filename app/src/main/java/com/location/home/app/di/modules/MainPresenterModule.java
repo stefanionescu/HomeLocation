@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.location.home.app.di.scopes.MainScope;
 import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.domain.gethomelocation.FetchHome;
 import com.location.home.ui.presenters.MainPresenter;
 import com.location.home.ui.presenters.MainPresenterImp;
 import com.location.home.ui.views.MainView;
@@ -11,11 +12,11 @@ import com.location.home.ui.views.MainView;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = UseCasesModule.class)
+@Module(includes = FetchUseCaseModule.class)
 public class MainPresenterModule {
 
-    MainView view;
-    Context context;
+    private MainView view;
+    private Context context;
 
     public MainPresenterModule(MainView view, Context context) {
 
@@ -26,9 +27,9 @@ public class MainPresenterModule {
 
     @Provides
     @MainScope
-    public MainPresenter providePresenter(LocateHome locate) {
+    public MainPresenter providePresenter(FetchHome fetchHome) {
 
-        return new MainPresenterImp(view, context, locate);
+        return new MainPresenterImp(view, context, fetchHome);
 
     }
 

@@ -1,6 +1,6 @@
 package com.location.home.homeUtilsTests;
 
-import com.location.home.domain.calculatehomelocation.utils.ProbableLocation;
+import com.location.home.domain.gethomelocation.utils.ProbableLocation;
 import com.location.home.domain.model.Approximation;
 import com.location.home.domain.model.HomeLocation;
 
