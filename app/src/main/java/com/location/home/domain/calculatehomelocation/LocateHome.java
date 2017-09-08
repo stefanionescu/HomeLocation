@@ -43,7 +43,7 @@ public class LocateHome extends UseCaseVoid<LocateHome.Params> {
             this.newLocation = newLocation;
         }
 
-        public static Params forUser(String newLocation) {
+        public static Params forLocation(String newLocation) {
             return new Params(newLocation);
         }
     }

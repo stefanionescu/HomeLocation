@@ -1,11 +1,5 @@
 <resources>
-    <string name="app_name">HomeLocation</string>
-
-    <string name="accuracy">Accuracy: </string>
-
-    <string name="satellite">Satellites: </string>
-
-    <string name="fetching_data">Fetching data...</string>
+    <string name="app_name">Home Location</string>
 
     <string name="possible_address">Possible home address:</string>
 
@@ -19,7 +13,7 @@
 
     <string name="done">Done!</string>
 
-    <string name="notification_text">Your service is running</string>
+    <string name="notification_text">Last known location: </string>
 
     <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
 

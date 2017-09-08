@@ -11,7 +11,8 @@ import java.util.ArrayList;
 public class UpdateLocationsList {
 
     private final int EARTH_RADIUS = 6371000; // < -- meters
-    private double minimumDistance = 900000.00;
+    private double minimumDistance = 6401000.00;
+    private final int samePointAllowance = 30;
 
     private ArrayList<HomeLocation> locations;
     private double newLat, newLong;
@@ -54,7 +55,7 @@ public class UpdateLocationsList {
                     newLat,
                     newLong);
 
-            if (currentDistance < minimumDistance && currentDistance <= 40) {
+            if (currentDistance < minimumDistance && currentDistance <= samePointAllowance) {
 
                 minimumDistance = currentDistance;
 
