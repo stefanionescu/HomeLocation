@@ -3,7 +3,7 @@ package com.location.home.app.di.modules;
 import android.content.Context;
 
 import com.location.home.app.di.scopes.ServiceScope;
-import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.domain.calculatehomelocation.CalculateHome;
 import com.location.home.executor.ThreadExecutor;
 
 import javax.inject.Named;
@@ -24,9 +24,9 @@ public class LocateUseCaseModule {
 
     @Provides
     @ServiceScope
-    public LocateHome provideLocateHome(@Named("interactor_exec") ThreadExecutor threadExecutor) {
+    public CalculateHome provideLocateHome(@Named("interactor_exec") ThreadExecutor threadExecutor) {
 
-        return new LocateHome(threadExecutor, context);
+        return new CalculateHome(threadExecutor, context);
 
     }
 

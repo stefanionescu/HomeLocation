@@ -23,13 +23,13 @@ public class CheckAvailableProviders {
 
     public boolean checkNetwork(Context context) {
 
-        final ConnectivityManager manager = (ConnectivityManager)
+        ConnectivityManager manager = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        final android.net.NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        android.net.NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        android.net.NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        if (wifi.isConnectedOrConnecting() || mobile.isConnectedOrConnecting())
+        if (wifi.isConnected() || mobile.isConnected())
             return true;
 
         return false;

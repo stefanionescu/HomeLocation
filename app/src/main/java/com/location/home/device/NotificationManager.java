@@ -29,7 +29,7 @@ public class NotificationManager {
 
     public void startNotification(){
 
-        manager.notify(0, notification);
+        manager.notify(1, notification);
 
     }
 
@@ -38,7 +38,7 @@ public class NotificationManager {
         android.app.NotificationManager notificationManager =
                 (android.app.NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        notificationManager.cancel(0);
+        notificationManager.cancel(1);
 
     }
 

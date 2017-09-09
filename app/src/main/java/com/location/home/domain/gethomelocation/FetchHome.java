@@ -1,6 +1,6 @@
 package com.location.home.domain.gethomelocation;
 
-import com.location.home.domain.calculatehomelocation.utils.GetHomeLocation;
+import com.location.home.domain.calculatehomelocation.utils.CalculateLocationManager;
 import com.location.home.domain.gethomelocation.utils.ProbableLocation;
 import com.location.home.domain.model.Approximation;
 import com.location.home.executor.PostExecutionThread;
@@ -20,13 +20,13 @@ public class FetchHome extends UseCaseObservable<Approximation, Void> {
     public Observable<Approximation> buildUseCaseObservable(Void aVoid) {
 
         Approximation approximation = new ProbableLocation()
-                .checkIfDominantExists(new GetHomeLocation()
+                .checkIfDominantExists(new CalculateLocationManager()
                         .getLocationsList(" "));
 
         if (approximation != null){
 
             return Observable.just(new ProbableLocation()
-                    .checkIfDominantExists(new GetHomeLocation()
+                    .checkIfDominantExists(new CalculateLocationManager()
                             .getLocationsList(" ")));
 
         }

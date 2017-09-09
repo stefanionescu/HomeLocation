@@ -3,7 +3,6 @@ package com.location.home.app.di.modules;
 import android.content.Context;
 
 import com.location.home.app.di.scopes.MainScope;
-import com.location.home.domain.calculatehomelocation.LocateHome;
 import com.location.home.domain.gethomelocation.FetchHome;
 import com.location.home.ui.presenters.MainPresenter;
 import com.location.home.ui.presenters.MainPresenterImp;

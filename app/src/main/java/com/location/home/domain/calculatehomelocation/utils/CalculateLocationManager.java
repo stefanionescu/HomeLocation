@@ -5,12 +5,12 @@ import com.location.home.domain.model.HomeLocation;
 
 import java.util.ArrayList;
 
-public class GetHomeLocation {
+public class CalculateLocationManager {
 
     private ConvertData convert;
     private FileManager manager;
 
-    public GetHomeLocation(){
+    public CalculateLocationManager(){
 
         manager = new FileManager();
 

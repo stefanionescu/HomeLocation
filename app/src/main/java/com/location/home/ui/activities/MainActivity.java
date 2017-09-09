@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void changeButtonToStart(){
+    public void changeButtonToStart() {
 
         getCoordinates.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
 

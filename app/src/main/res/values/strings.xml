@@ -21,6 +21,6 @@
 
     <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
 
-    <string name="not_able_to_get_location">Couldn\'t get an accurate location with GPS. Please enable your Wifi/mobile data</string>
+    <string name="not_able_to_get_location">Couldn\'t get an accurate location with GPS. Please enable your Wifi</string>
 
 </resources>

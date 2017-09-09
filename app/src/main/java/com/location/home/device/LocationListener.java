@@ -7,9 +7,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.widget.Toast;
 
 import com.location.home.R;
-import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.domain.calculatehomelocation.CalculateHome;
 import com.location.home.ui.utils.CheckAvailableProviders;
 import com.location.home.ui.utils.CheckServiceRunning;
 
@@ -19,7 +20,7 @@ public class LocationListener implements android.location.LocationListener {
 
     private final double noiseAllowance = 30.00;
     private String provider;
-    private LocateHome locateHome;
+    private CalculateHome calculateHome;
     private Location mLastLocation;
     private Context context;
     private GpsService service;
@@ -31,11 +32,11 @@ public class LocationListener implements android.location.LocationListener {
     public LocationListener(String provider,
                             Context context,
                             GpsService service,
-                            LocateHome locateHome,
+                            CalculateHome calculateHome,
                             Notification.Builder builder,
                             android.app.NotificationManager manageNotifications) {
 
-        this.locateHome = locateHome;
+        this.calculateHome = calculateHome;
 
         this.context = context;
 
@@ -57,21 +58,21 @@ public class LocationListener implements android.location.LocationListener {
 
         mLastLocation = new Location(provider);
 
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
 
-        if (provider.equals(LocationManager.GPS_PROVIDER)
-                && location.getAccuracy() <= noiseAllowance) {
-
-            gotPositionFromGps(location);
-
-        }
-
         if (Double.parseDouble(String.valueOf(location.getAccuracy())) > noiseAllowance) {
 
             return;
+
+        }
+
+        if (provider.equals(LocationManager.GPS_PROVIDER)) {
+
+            gotPositionFromGps();
 
         }
 
@@ -84,11 +85,15 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
-        if (provider.equals(LocationManager.GPS_PROVIDER) && service != null) {
+        if (this.provider.equals(LocationManager.GPS_PROVIDER)
+                && provider.equals(LocationManager.GPS_PROVIDER)
+                && service != null) {
 
             disablingGps();
 
-        } else if (provider.equals(LocationManager.NETWORK_PROVIDER) && service != null) {
+        } else if (this.provider.equals(LocationManager.NETWORK_PROVIDER)
+                && provider.equals(LocationManager.NETWORK_PROVIDER)
+                && service != null) {
 
             disablingNetwork();
 
@@ -107,6 +112,7 @@ public class LocationListener implements android.location.LocationListener {
 
         } else if (this.provider.equals(LocationManager.NETWORK_PROVIDER)
                 && provider.equals(LocationManager.GPS_PROVIDER))
+
             service.getLocationFromGPS();
 
     }
@@ -134,7 +140,7 @@ public class LocationListener implements android.location.LocationListener {
 
         builder = null;
 
-        locateHome = null;
+        calculateHome = null;
 
         context = null;
 
@@ -178,13 +184,18 @@ public class LocationListener implements android.location.LocationListener {
 
     private void disablingGps() {
 
-        if (new CheckAvailableProviders().checkNetwork(context)) service.getLocationFromNetwork();
+        Toast.makeText(context,
+                String.valueOf(new CheckAvailableProviders().checkGps(context)),
+                Toast.LENGTH_LONG).show();
 
-        service.removeListenerUpdates(0);
+        if (new CheckAvailableProviders().checkNetwork(context)) {
 
-        if (!new CheckAvailableProviders().checkNetwork(context)) cleanResources();
+            service.getLocationFromNetwork();
+            service.removeListenerUpdates(0);
 
-        clearVariables();
+            clearVariables();
+
+        } else { cleanResources(); }
 
     }
 
@@ -192,25 +203,24 @@ public class LocationListener implements android.location.LocationListener {
 
         if (new CheckAvailableProviders().checkGps(context)) service.getLocationFromGPS();
 
-        service.removeListenerUpdates(1);
+        if (!new CheckAvailableProviders().checkGps(context)) {
+            cleanResources();
+            return;
+        }
 
-        if (!new CheckAvailableProviders().checkGps(context)) cleanResources();
+        service.removeListenerUpdates(1);
 
         clearVariables();
 
     }
 
-    private void gotPositionFromGps(Location location) {
+    private void gotPositionFromGps() {
 
-        if (location.getAccuracy() <= noiseAllowance) {
+        restartCountDown();
 
-            restartCountDown();
+        canEnableNetworkListener = 0;
 
-            canEnableNetworkListener = 0;
-
-            service.removeListenerUpdates(1);
-
-        }
+        service.removeListenerUpdates(1);
 
     }
 
@@ -220,7 +230,7 @@ public class LocationListener implements android.location.LocationListener {
                 + " "
                 + String.valueOf(location.getLongitude());
 
-        locateHome.execute(LocateHome.Params.forLocation(newLocation));
+        calculateHome.execute(CalculateHome.Params.forLocation(newLocation));
 
         mLastLocation.set(location);
 
@@ -241,7 +251,8 @@ public class LocationListener implements android.location.LocationListener {
 
                         service.getLocationFromNetwork();
 
-                    }
+                    } else
+                        showToastEnableWifi();
 
                     canEnableNetworkListener++;
 
@@ -252,6 +263,14 @@ public class LocationListener implements android.location.LocationListener {
             }
 
         };
+
+    }
+
+    private void showToastEnableWifi() {
+
+        Toast.makeText(context,
+                String.valueOf(context.getResources().getString(R.string.not_able_to_get_location)),
+                Toast.LENGTH_LONG).show();
 
     }
 

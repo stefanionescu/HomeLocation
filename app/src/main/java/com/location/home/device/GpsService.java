@@ -1,26 +1,23 @@
 package com.location.home.device;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 
 import com.location.home.app.di.components.DaggerServiceComponent;
 import com.location.home.app.di.modules.LocateUseCaseModule;
 import com.location.home.app.di.modules.ServiceModule;
-import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.domain.calculatehomelocation.CalculateHome;
 
 import javax.inject.Inject;
 
 public class GpsService extends Service {
 
     @Inject
-    LocateHome locateHome;
+    CalculateHome calculateHome;
     @Inject
     Notification.Builder builder;
     @Inject
@@ -146,14 +143,14 @@ public class GpsService extends Service {
                 new LocationListener(LocationManager.GPS_PROVIDER,
                         context,
                         this,
-                        locateHome,
+                        calculateHome,
                         builder,
                         manageNotifications),
 
                 new LocationListener(LocationManager.NETWORK_PROVIDER,
                         context,
                         this,
-                        locateHome,
+                        calculateHome,
                         builder,
                         manageNotifications)};
 
