@@ -7,15 +7,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.widget.Toast;
 
 import com.location.home.R;
 import com.location.home.domain.calculatehomelocation.LocateHome;
+import com.location.home.ui.utils.CheckAvailableProviders;
+import com.location.home.ui.utils.CheckServiceRunning;
 
 import java.text.DecimalFormat;
 
 public class LocationListener implements android.location.LocationListener {
 
+    private final double noiseAllowance = 30.00;
     private String provider;
     private LocateHome locateHome;
     private Location mLastLocation;
@@ -23,10 +25,8 @@ public class LocationListener implements android.location.LocationListener {
     private GpsService service;
     private Notification.Builder builder;
     private CountDownTimer countDown;
-    private int isNetworkListenerEnabled = 0;
+    private int canEnableNetworkListener = 0;
     private android.app.NotificationManager manageNotifications;
-
-    private final double samePointAllowance = 35.00;
 
     public LocationListener(String provider,
                             Context context,
@@ -47,7 +47,7 @@ public class LocationListener implements android.location.LocationListener {
 
         this.manageNotifications = manageNotifications;
 
-        if (provider.equals(LocationManager.GPS_PROVIDER)){
+        if (provider.equals(LocationManager.GPS_PROVIDER)) {
 
             setUpCountDown();
 
@@ -62,19 +62,14 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        restartCountDown();
+        if (provider.equals(LocationManager.GPS_PROVIDER)
+                && location.getAccuracy() <= noiseAllowance) {
 
-        if (provider.equals(LocationManager.GPS_PROVIDER)) {
-
-            isNetworkListenerEnabled = 0;
-
-            service.removeListenerUpdates(1);
+            gotPositionFromGps(location);
 
         }
 
-        if (Double.parseDouble(String.valueOf(location.getAccuracy())) > samePointAllowance) {
-
-            mLastLocation.set(location);
+        if (Double.parseDouble(String.valueOf(location.getAccuracy())) > noiseAllowance) {
 
             return;
 
@@ -89,43 +84,69 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
-        if (checkNetwork() || checkGps()) return;
+        if (provider.equals(LocationManager.GPS_PROVIDER) && service != null) {
 
-        cleanResources();
+            disablingGps();
+
+        } else if (provider.equals(LocationManager.NETWORK_PROVIDER) && service != null) {
+
+            disablingNetwork();
+
+        }
 
     }
 
     @Override
     public void onProviderEnabled(String provider) {
 
+        if (this.provider.equals(LocationManager.GPS_PROVIDER)
+                && provider.equals(LocationManager.NETWORK_PROVIDER)
+                && canEnableNetworkListener > 0) {
+
+            service.getLocationFromNetwork();
+
+        } else if (this.provider.equals(LocationManager.NETWORK_PROVIDER)
+                && provider.equals(LocationManager.GPS_PROVIDER))
+            service.getLocationFromGPS();
+
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
-    private void cleanResources(){
-
-        clearVariables();
+    private void cleanResources() {
 
         stopService();
 
+        clearVariables();
+
     }
 
-    private void clearVariables(){
+    private void clearVariables() {
 
-       // if (provider.equals(LocationManager.GPS_PROVIDER))
-
-       // countDown.cancel();
+        try {
+            countDown.cancel();
+        } catch (Exception e) {
+        }
 
         countDown = null;
+
+        builder = null;
+
+        locateHome = null;
+
+        context = null;
+
+        manageNotifications = null;
+
+        provider = null;
 
         service = null;
 
     }
 
-    private void stopService(){
+    private void stopService() {
 
         Intent sendIntent = new Intent();
 
@@ -137,7 +158,7 @@ public class LocationListener implements android.location.LocationListener {
 
     }
 
-    private void changeNotificationText(Location location){
+    private void changeNotificationText(Location location) {
 
         DecimalFormat precision = new DecimalFormat("0.000");
 
@@ -146,46 +167,54 @@ public class LocationListener implements android.location.LocationListener {
 
         builder.setContentText(
                 context.getResources().getString(R.string.notification_text) +
-                String.valueOf(precision.format(lat)) +
-                " N " +
-                String.valueOf(precision.format(lon)) +
-                " E");
+                        String.valueOf(precision.format(lat)) +
+                        " N " +
+                        String.valueOf(precision.format(lon)) +
+                        " E");
 
         manageNotifications.notify(0, builder.build());
 
     }
 
-    private boolean checkGps(){
+    private void disablingGps() {
 
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (new CheckAvailableProviders().checkNetwork(context)) service.getLocationFromNetwork();
 
-        boolean gpsEnabled = false;
+        service.removeListenerUpdates(0);
 
-        try {
-            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
+        if (!new CheckAvailableProviders().checkNetwork(context)) cleanResources();
 
-        return gpsEnabled;
+        clearVariables();
 
     }
 
-    private boolean checkNetwork(){
+    private void disablingNetwork() {
 
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (new CheckAvailableProviders().checkGps(context)) service.getLocationFromGPS();
 
-        boolean networkEnabled = false;
+        service.removeListenerUpdates(1);
 
-        try {
-            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-        }
+        if (!new CheckAvailableProviders().checkGps(context)) cleanResources();
 
-        return networkEnabled;
+        clearVariables();
 
     }
 
-    private void processNewLocation(Location location){
+    private void gotPositionFromGps(Location location) {
+
+        if (location.getAccuracy() <= noiseAllowance) {
+
+            restartCountDown();
+
+            canEnableNetworkListener = 0;
+
+            service.removeListenerUpdates(1);
+
+        }
+
+    }
+
+    private void processNewLocation(Location location) {
 
         String newLocation = String.valueOf(location.getLatitude())
                 + " "
@@ -197,23 +226,28 @@ public class LocationListener implements android.location.LocationListener {
 
     }
 
-    private void setUpCountDown(){
+    private void setUpCountDown() {
 
-        countDown = new CountDownTimer(61000, 1000) {
+        countDown = new CountDownTimer(65000, 1000) {
 
-            public void onTick(long millisUntilFinished) {}
+            public void onTick(long millisUntilFinished) {
+            }
 
             public void onFinish() {
 
-                if (isNetworkListenerEnabled == 0){
+                if (new CheckServiceRunning(context).isMyServiceRunning(GpsService.class)) {
 
-                    service.getLocationFromNetwork();
+                    if (new CheckAvailableProviders().checkNetwork(context)) {
 
-                    isNetworkListenerEnabled = 1;
+                        service.getLocationFromNetwork();
+
+                    }
+
+                    canEnableNetworkListener++;
+
+                    restartCountDown();
 
                 }
-
-                restartCountDown();
 
             }
 
@@ -221,9 +255,9 @@ public class LocationListener implements android.location.LocationListener {
 
     }
 
-    private void restartCountDown(){
+    private void restartCountDown() {
 
-        if (provider.equals(LocationManager.GPS_PROVIDER)){
+        if (provider.equals(LocationManager.GPS_PROVIDER)) {
 
             countDown.cancel();
 

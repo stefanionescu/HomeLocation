@@ -18,6 +18,7 @@ import com.location.home.app.di.modules.MainPresenterModule;
 import com.location.home.device.GpsService;
 import com.location.home.ui.presenters.MainPresenter;
 import com.location.home.ui.utils.AskForPermission;
+import com.location.home.ui.utils.CheckAvailableProviders;
 import com.location.home.ui.utils.CheckServiceRunning;
 import com.location.home.ui.views.MainView;
 import com.melnykov.fab.FloatingActionButton;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @OnClick(R.id.get_coordinates)
     public void clickedGetCoordinates() {
 
-        if (!presenter.checkForProviders()) {
+        if (!new CheckAvailableProviders().checkGps(getApplicationContext())) {
 
             askForProviders();
 
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                     @Override
                     public void onClick(View v) {
 
-                        if (!presenter.checkForProviders())
+                        if (!new CheckAvailableProviders().checkGps(getApplicationContext()))
                             askForProviders();
 
                     }

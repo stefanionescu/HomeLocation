@@ -13,8 +13,14 @@
 
     <string name="done">Done!</string>
 
-    <string name="notification_text">Live: </string>
+    <string name="gps_position">GPS position</string>
+
+    <string name="network_position">Network position</string>
+
+    <string name="notification_text">Last loc: </string>
 
     <string name="enable_gps_message">You need to enable the GPS in order to get updates</string>
+
+    <string name="not_able_to_get_location">Couldn\'t get an accurate location with GPS. Please enable your Wifi/mobile data</string>
 
 </resources>

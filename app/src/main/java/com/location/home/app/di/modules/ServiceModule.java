@@ -43,7 +43,7 @@ public class ServiceModule {
 
         return new Notification.Builder(context)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.notification_text))
+                .setContentText(context.getString(R.string.notification_text) + " N/A")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(false)
                 .setOngoing(true)

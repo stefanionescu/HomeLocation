@@ -68,25 +68,26 @@ public class GpsService extends Service {
     @Override
     public void onDestroy() {
 
-        super.onDestroy();
-
         removeAllListeners();
 
+        locationManager = null;
+
         notificationManager.stopNotification();
+
+        locationListeners = null;
+
+        super.onDestroy();
+
 
     }
 
     public void removeListenerUpdates(int i) {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        try{
 
-            if (locationManager.getAllProviders().size() >= i)
-                locationManager.removeUpdates(locationListeners[i]);
+            locationManager.removeUpdates(locationListeners[i]);
 
-        }
+            } catch(Exception e){}
 
     }
 
@@ -98,7 +99,7 @@ public class GpsService extends Service {
 
     }
 
-    private void getLocationFromGPS() {
+    public void getLocationFromGPS() {
 
         try {
 
@@ -162,17 +163,19 @@ public class GpsService extends Service {
 
         if (locationManager != null) {
 
-            for (int i = 0; i < locationListeners.length; i++) {
+                for (int i = 0; i < locationListeners.length; i++) {
 
-                try {
+                    try {
 
-                    removeListenerUpdates(i);
+                        removeListenerUpdates(i);
 
-                } catch (Exception ex) {
+                    } catch (Exception ex) {
+
+                    }
 
                 }
 
-            }
+
         }
 
     }

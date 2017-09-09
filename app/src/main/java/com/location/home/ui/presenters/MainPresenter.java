@@ -8,6 +8,4 @@ public interface MainPresenter extends Presenter<MainView>{
 
     void stopFetchingData();
 
-    boolean checkForProviders();
-
 }

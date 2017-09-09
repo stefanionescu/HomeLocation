@@ -53,25 +53,6 @@ public class MainPresenterImp implements MainPresenter {
 
     }
 
-    @Override
-    public boolean checkForProviders() {
-
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        boolean gps_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        if (!gps_enabled)
-            return false;
-
-        return true;
-
-    }
-
     private void calculateHouseLocation() {
 
         fetchHome.execute(new UserListObserver(), null);

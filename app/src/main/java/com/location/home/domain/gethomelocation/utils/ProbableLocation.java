@@ -14,7 +14,7 @@ public class ProbableLocation {
 
         for (int i = 0; i < locations.size(); i++){
 
-            if (locations.get(i).getPoints() >= 10 && locations.get(i).getPoints() > minimum){
+            if (locations.get(i).getPoints() >= 20 && locations.get(i).getPoints() > minimum){
 
                 probablePosition = i;
                 minimum = locations.get(i).getPoints();
