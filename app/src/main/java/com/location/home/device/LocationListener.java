@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.location.home.R;
@@ -85,19 +86,11 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
-        if (this.provider.equals(LocationManager.GPS_PROVIDER)
-                && provider.equals(LocationManager.GPS_PROVIDER)
-                && service != null) {
+        if (new CheckAvailableProviders().checkGps(context))
 
-            disablingGps();
+            return;
 
-        } else if (this.provider.equals(LocationManager.NETWORK_PROVIDER)
-                && provider.equals(LocationManager.NETWORK_PROVIDER)
-                && service != null) {
-
-            disablingNetwork();
-
-        }
+        cleanResources();
 
     }
 
@@ -108,17 +101,14 @@ public class LocationListener implements android.location.LocationListener {
                 && provider.equals(LocationManager.NETWORK_PROVIDER)
                 && canEnableNetworkListener > 0) {
 
-            service.getLocationFromNetwork();
+            service.getLocationFromNetwork(60 * 1000, 15);
 
-        } else if (this.provider.equals(LocationManager.NETWORK_PROVIDER)
-                && provider.equals(LocationManager.GPS_PROVIDER))
-
-            service.getLocationFromGPS();
-
+        }
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 
     private void cleanResources() {
@@ -178,39 +168,7 @@ public class LocationListener implements android.location.LocationListener {
                         String.valueOf(precision.format(lon)) +
                         " E");
 
-        manageNotifications.notify(0, builder.build());
-
-    }
-
-    private void disablingGps() {
-
-        Toast.makeText(context,
-                String.valueOf(new CheckAvailableProviders().checkGps(context)),
-                Toast.LENGTH_LONG).show();
-
-        if (new CheckAvailableProviders().checkNetwork(context)) {
-
-            service.getLocationFromNetwork();
-            service.removeListenerUpdates(0);
-
-            clearVariables();
-
-        } else { cleanResources(); }
-
-    }
-
-    private void disablingNetwork() {
-
-        if (new CheckAvailableProviders().checkGps(context)) service.getLocationFromGPS();
-
-        if (!new CheckAvailableProviders().checkGps(context)) {
-            cleanResources();
-            return;
-        }
-
-        service.removeListenerUpdates(1);
-
-        clearVariables();
+        manageNotifications.notify(1, builder.build());
 
     }
 
@@ -238,7 +196,7 @@ public class LocationListener implements android.location.LocationListener {
 
     private void setUpCountDown() {
 
-        countDown = new CountDownTimer(65000, 1000) {
+        countDown = new CountDownTimer(62000, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }
@@ -249,7 +207,7 @@ public class LocationListener implements android.location.LocationListener {
 
                     if (new CheckAvailableProviders().checkNetwork(context)) {
 
-                        service.getLocationFromNetwork();
+                        service.getLocationFromNetwork(60 * 1000, 20);
 
                     } else
                         showToastEnableWifi();

@@ -25,13 +25,16 @@ public class AskForPermission {
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
 
                 || ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+
+                || ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions((Activity) context,
 
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.ACCESS_WIFI_STATE}, 1);
 
         }
 

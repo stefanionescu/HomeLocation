@@ -58,7 +58,7 @@ public class GpsService extends Service {
 
         initializeLocationManager();
 
-        getLocationFromGPS();
+        getLocationFromGPS(60 * 1000, 15);
 
     }
 
@@ -96,12 +96,12 @@ public class GpsService extends Service {
 
     }
 
-    public void getLocationFromGPS() {
+    public void getLocationFromGPS(int time, int distance) {
 
         try {
 
             locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 60 * 1000, 15,
+                    LocationManager.GPS_PROVIDER, time, distance,
                     locationListeners[0]);
 
         } catch (java.lang.SecurityException ex) {
@@ -110,12 +110,12 @@ public class GpsService extends Service {
 
     }
 
-    public void getLocationFromNetwork() {
+    public void getLocationFromNetwork(int time, int distance) {
 
         try {
 
             locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 60 * 1000, 15,
+                    LocationManager.NETWORK_PROVIDER, time, distance,
                     locationListeners[1]);
 
         } catch (java.lang.SecurityException ex) {
