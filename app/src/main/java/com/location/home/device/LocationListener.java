@@ -7,7 +7,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.location.home.R;
@@ -27,7 +26,6 @@ public class LocationListener implements android.location.LocationListener {
     private GpsService service;
     private Notification.Builder builder;
     private CountDownTimer countDown;
-    private int canEnableNetworkListener = 0;
     private android.app.NotificationManager manageNotifications;
 
     public LocationListener(String provider,
@@ -86,24 +84,19 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
-        if (new CheckAvailableProviders().checkGps(context))
+        CheckAvailableProviders providers = new CheckAvailableProviders();
 
-            return;
+        if (providers.checkGps(context) == false) {
 
-        cleanResources();
+            cleanResources();
+
+        }
 
     }
 
     @Override
     public void onProviderEnabled(String provider) {
 
-        if (this.provider.equals(LocationManager.GPS_PROVIDER)
-                && provider.equals(LocationManager.NETWORK_PROVIDER)
-                && canEnableNetworkListener > 0) {
-
-            service.getLocationFromNetwork(60 * 1000, 15);
-
-        }
     }
 
     @Override
@@ -176,8 +169,6 @@ public class LocationListener implements android.location.LocationListener {
 
         restartCountDown();
 
-        canEnableNetworkListener = 0;
-
         service.removeListenerUpdates(1);
 
     }
@@ -207,12 +198,10 @@ public class LocationListener implements android.location.LocationListener {
 
                     if (new CheckAvailableProviders().checkNetwork(context)) {
 
-                        service.getLocationFromNetwork(60 * 1000, 20);
+                        service.getLocationFromNetwork(60 * 1000, 15);
 
                     } else
                         showToastEnableWifi();
-
-                    canEnableNetworkListener++;
 
                     restartCountDown();
 

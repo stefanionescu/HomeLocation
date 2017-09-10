@@ -53,7 +53,7 @@ public class MainPresenterImp implements MainPresenter {
 
     }
 
-    private void calculateHouseLocation() {
+    private void getHouseLocation() {
 
         fetchHome.execute(new UserListObserver(), null);
 
@@ -62,7 +62,7 @@ public class MainPresenterImp implements MainPresenter {
     @Override
     public void onResumeView() {
 
-        calculateHouseLocation();
+        getHouseLocation();
 
     }
 
@@ -74,7 +74,7 @@ public class MainPresenterImp implements MainPresenter {
 
                 if (intent.getAction().equals("com.location.home.device.GET_LOCATION")) {
 
-                    calculateHouseLocation();
+                    getHouseLocation();
 
                 } else if (intent.getAction().equals("com.location.home.device.STOPPED_GETTING_LOCATION")) {
 

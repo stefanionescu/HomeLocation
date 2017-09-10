@@ -8,8 +8,6 @@
 
     <uses-permission android:name="android.hardware.location.gps"/>
 
-    <uses-permission android:name="android.hardware.location.network"/>
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -17,7 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 
 
     <application
@@ -40,7 +37,6 @@
         </activity>
 
         <service android:enabled="true" android:name="com.location.home.device.GpsService" />
-
 
     </application>
 

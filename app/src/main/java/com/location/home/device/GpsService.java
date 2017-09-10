@@ -125,6 +125,18 @@ public class GpsService extends Service {
 
     }
 
+    public int getNumberOfActiveListeners(){
+
+        return locationManager.getProviders(true).size();
+
+    }
+
+    public int getAllListeners(){
+
+        return locationManager.getAllProviders().size();
+
+    }
+
     private void prepareVariables() {
 
         context = this.getApplicationContext();
