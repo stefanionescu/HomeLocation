@@ -6,11 +6,14 @@ public class HomeLocation {
 
     private int points;
 
-    public HomeLocation(double lat, double lon, int points){
+    private int weekends;
+
+    public HomeLocation(double lat, double lon, int points, int weekends){
 
         this.points = points;
         this.lat = lat;
         this.lon = lon;
+        this.weekends = weekends;
 
     }
 
@@ -36,6 +39,14 @@ public class HomeLocation {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getWeekends() {
+        return weekends;
+    }
+
+    public void setWeekends(int weekends) {
+        this.weekends = weekends;
     }
 
 }

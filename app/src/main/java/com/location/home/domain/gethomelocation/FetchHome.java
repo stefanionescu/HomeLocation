@@ -21,13 +21,13 @@ public class FetchHome extends UseCaseObservable<Approximation, Void> {
 
         Approximation approximation = new ProbableLocation()
                 .checkIfDominantExists(new CalculateLocationManager()
-                        .getLocationsList(" "));
+                        .getLocationsList(" ", null));
 
         if (approximation != null){
 
             return Observable.just(new ProbableLocation()
                     .checkIfDominantExists(new CalculateLocationManager()
-                            .getLocationsList(" ")));
+                            .getLocationsList(" ", null)));
 
         }
 

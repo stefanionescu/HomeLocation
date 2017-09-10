@@ -22,7 +22,8 @@ public class ConvertData {
 
                 locations.add(new HomeLocation( Double.parseDouble( data[0] ),
                         Double.parseDouble( data[1] ),
-                        Integer.parseInt( data[2] ) ) );
+                        Integer.parseInt( data[2] ) ,
+                        Integer.parseInt( data[3] ) ));
 
             } catch (Exception e){
 
@@ -46,7 +47,9 @@ public class ConvertData {
                     + " "
                     + String.valueOf(locations.get(i).getLon())
                     + " "
-                    + String.valueOf(locations.get(i).getPoints()));
+                    + String.valueOf(locations.get(i).getPoints())
+                    + " "
+                    + String.valueOf(locations.get(i).getWeekends()));
 
             if (i < locations.size() - 1)
 

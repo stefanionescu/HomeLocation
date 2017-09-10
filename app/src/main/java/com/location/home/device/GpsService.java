@@ -58,7 +58,7 @@ public class GpsService extends Service {
 
         initializeLocationManager();
 
-        getLocationFromGPS(60 * 1000, 15);
+        getLocationFromGPS(90 * 1000, 15);
 
     }
 
@@ -122,18 +122,6 @@ public class GpsService extends Service {
         } catch (IllegalArgumentException ex) {
         }
 
-
-    }
-
-    public int getNumberOfActiveListeners(){
-
-        return locationManager.getProviders(true).size();
-
-    }
-
-    public int getAllListeners(){
-
-        return locationManager.getAllProviders().size();
 
     }
 

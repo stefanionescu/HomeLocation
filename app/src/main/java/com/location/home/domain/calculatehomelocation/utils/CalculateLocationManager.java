@@ -1,5 +1,7 @@
 package com.location.home.domain.calculatehomelocation.utils;
 
+import android.content.Context;
+
 import com.location.home.device.FileManager;
 import com.location.home.domain.model.HomeLocation;
 
@@ -18,7 +20,7 @@ public class CalculateLocationManager {
 
     }
 
-    public ArrayList<HomeLocation> getLocationsList(String newLocation){
+    public ArrayList<HomeLocation> getLocationsList(String newLocation, Context context){
 
         ArrayList<HomeLocation> homeLocations = new ArrayList<>();
 
@@ -26,7 +28,7 @@ public class CalculateLocationManager {
 
         if (newLocation != " ") {
 
-            homeLocations = updateLocationsList(currentLocations, newLocation);
+            homeLocations = updateLocationsList(currentLocations, newLocation, context);
 
             rewriteData(homeLocations);
 
@@ -48,12 +50,12 @@ public class CalculateLocationManager {
 
     }
 
-    private ArrayList<HomeLocation> updateLocationsList(String currentLocations, String params) {
+    private ArrayList<HomeLocation> updateLocationsList(String currentLocations, String params, Context context) {
 
         UpdateLocationsList updateLocationsList =
                 new UpdateLocationsList(params, convertToList(currentLocations));
 
-        return updateLocationsList.getApproximation();
+        return updateLocationsList.getApproximation(context);
 
     }
 

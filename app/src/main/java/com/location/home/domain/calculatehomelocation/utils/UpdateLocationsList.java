@@ -1,8 +1,14 @@
 package com.location.home.domain.calculatehomelocation.utils;
 
+import android.content.Context;
+
+import com.location.home.device.SharedPrefsManager;
 import com.location.home.domain.model.HomeLocation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Adapted from http://www.movable-type.co.uk/scripts/latlong.html
@@ -17,6 +23,8 @@ public class UpdateLocationsList {
     private ArrayList<HomeLocation> locations;
     private double newLat, newLong;
 
+    private String sharedPrefsKey = "weekdays";
+
     public UpdateLocationsList(String newLocation, ArrayList<HomeLocation> locations) {
 
         this.locations = locations;
@@ -29,7 +37,7 @@ public class UpdateLocationsList {
 
     }
 
-    public ArrayList<HomeLocation> getApproximation() {
+    public ArrayList<HomeLocation> getApproximation(Context context) {
 
         int similarPoint = getSimilarPoint();
 
@@ -37,8 +45,18 @@ public class UpdateLocationsList {
 
             locations.get(similarPoint).setPoints(locations.get(similarPoint).getPoints() + 1);
 
-        } else
-            locations.add(new HomeLocation(newLat, newLong, 1));
+            if (new DateManager().isTodayWeekend()){
+
+               addNewWeekendDay(context, similarPoint);
+
+            }
+
+        } else {
+
+            addNewLocationPoint(context);
+
+        }
+
 
         return locations;
 
@@ -68,6 +86,36 @@ public class UpdateLocationsList {
         return point;
 
     }
+
+    private void addNewLocationPoint(Context context){
+
+        if (new DateManager().isTodayWeekend()){
+
+            new SharedPrefsManager(context)
+                    .writeWeekend(sharedPrefsKey, new DateManager().getCurrentDate());
+
+            locations.add(new HomeLocation(newLat, newLong, 1, 1));
+
+        } else
+            locations.add(new HomeLocation(newLat, newLong, 1, 0));
+
+    }
+
+    private void addNewWeekendDay(Context context, int similarPoint){
+
+        if (!new SharedPrefsManager(context)
+                .getWeekend(sharedPrefsKey)
+                .equals(new DateManager().getCurrentDate())) {
+
+            new SharedPrefsManager(context)
+                    .writeWeekend(sharedPrefsKey, new DateManager().getCurrentDate());
+
+            locations.get(similarPoint).setWeekends(locations.get(similarPoint).getWeekends() + 1);
+
+        }
+
+    }
+
 
     public double haversineDistance(double startLat, double startLong,
                                     double endLat, double endLong) {

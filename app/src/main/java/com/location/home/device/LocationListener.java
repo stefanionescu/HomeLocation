@@ -198,7 +198,9 @@ public class LocationListener implements android.location.LocationListener {
 
                     if (new CheckAvailableProviders().checkNetwork(context)) {
 
-                        service.getLocationFromNetwork(60 * 1000, 15);
+                        service.removeListenerUpdates(1);
+
+                        service.getLocationFromNetwork(90 * 1000, 20);
 
                     } else
                         showToastEnableWifi();

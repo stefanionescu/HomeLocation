@@ -26,7 +26,7 @@ public class CalculateHome extends UseCaseVoid<CalculateHome.Params> {
     @Override
     public void buildUseCase(Params params) {
 
-        new CalculateLocationManager().getLocationsList(params.newLocation);
+        new CalculateLocationManager().getLocationsList(params.newLocation, context);
 
         Intent sendIntent = new Intent();
         sendIntent.setAction("com.location.home.device.GET_LOCATION");

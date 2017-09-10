@@ -11,14 +11,16 @@ public class ProbableLocation {
     private int probablePosition = -1;
     private int minimumPoints = 30;
 
-    public Approximation checkIfDominantExists(ArrayList<HomeLocation> locations){
+    public Approximation checkIfDominantExists(ArrayList<HomeLocation> locations) {
 
-        for (int i = 0; i < locations.size(); i++){
+        for (int i = 0; i < locations.size(); i++) {
 
-            if (locations.get(i).getPoints() >= minimumPoints && locations.get(i).getPoints() > minimum){
+            if (locations.get(i).getPoints() >= minimumPoints
+                    && locations.get(i).getPoints()
+                    + locations.get(i).getWeekends() > minimum) {
 
                 probablePosition = i;
-                minimum = locations.get(i).getPoints();
+                minimum = locations.get(i).getPoints() + locations.get(i).getWeekends();
 
             }
 
@@ -26,7 +28,7 @@ public class ProbableLocation {
 
         if (probablePosition > -1)
             return new Approximation(locations.get(probablePosition).getLat(),
-                        locations.get(probablePosition).getLon());
+                    locations.get(probablePosition).getLon());
 
         return null;
 
